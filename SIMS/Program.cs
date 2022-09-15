@@ -4,7 +4,7 @@ using SeeTech.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SeeTechContext") ));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SIMSContext") ));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

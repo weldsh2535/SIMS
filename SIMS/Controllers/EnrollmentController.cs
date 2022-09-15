@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SeeTech.Data;
+using SeeTech.Models;
 
 namespace SeeTech.Controllers
 {
@@ -18,9 +19,33 @@ namespace SeeTech.Controllers
         {
             return Json(await _dataContext.Enrollments.ToArrayAsync());
         }
-        public IActionResult Index()
+        [HttpGet("{Id}")]
+        public async Task<IActionResult> Get(int Id)
         {
-            return View();
+            return Json(await _dataContext.Enrollments.SingleOrDefaultAsync(c=>c.CourseID == Id));
         }
+        [HttpPost]
+        public async Task<IActionResult> Post(Enrollment enrollment)
+        {
+            _dataContext.Enrollments.Add(enrollment);
+            await _dataContext.SaveChangesAsync();
+            return Json("Add Success!!");
+        }
+        [HttpPut]
+        public async Task<IActionResult> Update(Enrollment enrollment)
+        {
+            _dataContext.Enrollments.Update(enrollment);
+            await _dataContext.SaveChangesAsync();
+            return Json("Updated!!");
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+           var data =  _dataContext.Enrollments.SingleOrDefault(c => c.EnrollmentID == id);
+            _dataContext?.Enrollments.Remove(data);
+            await _dataContext.SaveChangesAsync();
+            return Json("Deleted!!");
+        }
+       
     }
 }
