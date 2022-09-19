@@ -11,6 +11,12 @@ namespace SeeTech.Models
         public string Lname { get; set; }
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString ="{0:yyyy-mm-dd" , ApplyFormatInEditMode =true)] 
+        public string Gender { get; set; }
+        public DateTime BirthDate { get; set; }
+        public string FullName
+        {
+          get { return Fname + "," + Lname; }
+        } 
         public DateTime enrollmentDate { get; set; }
         public ICollection<Enrollment> enrollments { get; set; }
     }

@@ -24,6 +24,28 @@ namespace SeeTech.Controllers
         {
             return Json(await _dataContext.Courses.SingleOrDefaultAsync(c => c.cousreID == courseId));
         }
+        [HttpGet("allList")]
+        public JsonResult GetAllList()
+        {
+            List<Course> courseList = _dataContext.Courses.ToList();
+            List<Department> departmentList = _dataContext.Departments.ToList();
+            List<Instructor> instructorList = _dataContext.Instructors.ToList();
+            var courses = from cou in courseList
+                          join dep in departmentList on cou.DepartmetID equals dep.DepartmnetID
+                          join ins in instructorList on dep.InstructorID equals ins.Id
+                          select new
+                          {
+                              courseId = cou.cousreID,
+                              Title = cou.Title,
+                              Credits = cou.Credits,
+                              DepartmentName = dep.Name,
+                              Buget = dep.Buget,
+                              StatrDate = dep.StartDate,
+                              InstructorFullName = ins.FullName,
+                              HireDate = ins.hireDate
+                          };
+            return Json(courses);
+        }
         [HttpPost]
         public async Task<IActionResult> Post(Course course)
         {

@@ -22,7 +22,25 @@ namespace SeeTech.Controllers
         [HttpGet("{Id}")]
         public async Task<IActionResult> Get(int Id)
         {
-            return Json(await _dataContext.OfficeAssignments.SingleOrDefaultAsync(c=>c.InstructorID==Id));
+            return Json(await _dataContext.OfficeAssignments.SingleOrDefaultAsync(c => c.InstructorID == Id));
+        }
+        [HttpGet("allList")]
+        public  JsonResult GetAll()
+        {
+            List<OfficeAssignment> officeAssignmentList =  _dataContext.OfficeAssignments.ToList();
+            List<Instructor> instructorList =  _dataContext.Instructors.ToList();
+
+            var instructor = from off in officeAssignmentList
+                             join ins in instructorList on off.InstructorID equals ins.Id
+                             select new
+                             {
+                                 InstructorId = ins.Id,
+                                 InstructorName = ins.FullName,
+                                 hireDate = ins.hireDate,
+                                 Location = off.Location
+                             };
+
+            return Json(instructor);
         }
         [HttpPost]
         public async Task<IActionResult> Post(OfficeAssignment officeAssignment)
