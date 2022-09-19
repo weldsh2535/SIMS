@@ -10,6 +10,7 @@ namespace SeeTech.Controllers
     public class OfficeAssignmentController : Controller
     {
         private readonly DataContext _dataContext;
+        private List<OfficeAssignment> _officeAssignments;
         public OfficeAssignmentController(DataContext dataContext)
         {
             _dataContext = dataContext;
@@ -41,6 +42,34 @@ namespace SeeTech.Controllers
                              };
 
             return Json(instructor);
+        }
+        [HttpGet("SearchText/{txtSearch}")]
+        public JsonResult Search(string txtSearch)
+        {
+            List<OfficeAssignment> officeAssignmentList = _dataContext.OfficeAssignments.ToList();
+
+            try
+            {
+                if (!string.IsNullOrEmpty(txtSearch))
+                {
+                    _officeAssignments = officeAssignmentList.Where(c=>(c.Location)
+                    .ToLower()
+                    .Contains(txtSearch.ToLower()))
+                    .ToList();
+                    if(_officeAssignments.Count > 0)
+                    {
+                        foreach (var instructor in _officeAssignments)
+                        {
+                            Console.WriteLine($"InstructorId   {instructor.InstructorID}  Location  {instructor.Location}");
+                        }
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return Json(_officeAssignments);
         }
         [HttpPost]
         public async Task<IActionResult> Post(OfficeAssignment officeAssignment)

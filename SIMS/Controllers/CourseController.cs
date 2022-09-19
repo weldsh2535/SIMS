@@ -10,6 +10,7 @@ namespace SeeTech.Controllers
     public class CourseController : Controller
     {
         private readonly DataContext _dataContext;
+        private List<Course> _course;
         public CourseController(DataContext dataContext)
         {
             _dataContext = dataContext;
@@ -23,6 +24,34 @@ namespace SeeTech.Controllers
         public async Task<IActionResult> Get(int courseId)
         {
             return Json(await _dataContext.Courses.SingleOrDefaultAsync(c => c.cousreID == courseId));
+        }
+        [HttpGet("searchElement/{txtSearch}")]
+        public JsonResult SearchByAnyType(string txtSearch)
+        {
+            List<Course> courseList = _dataContext.Courses.ToList();
+            try
+            {
+                if (!string.IsNullOrEmpty(txtSearch))
+                {
+                  _course =   courseList.Where(q => (q.Credits +  q.Title )
+                        .ToLower()
+                        .Contains(txtSearch.ToLower()))
+                        .ToList();
+                    if(_course.Count > 0)
+                    {
+                        foreach (var course in _course)
+                        {
+                            Console.WriteLine($"Course Title  {course.Title}  Credits {course.Credits}");
+                        }
+                    }
+                   
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return Json(_course);
         }
         [HttpGet("allList")]
         public JsonResult GetAllList()

@@ -24,6 +24,7 @@ namespace SeeTech.Controllers
         {
             return Json(await _dataContext.Departments.SingleOrDefaultAsync(c=>c.InstructorID == Id));
         }
+
         [HttpPost]
         public async Task<IActionResult> Post(Department department)
         {
